@@ -10,6 +10,6 @@ export const errorHandler = ((err, req, res, next) => {
   const isProd = process.env.NODE_ENV === 'production';
 
   res.status(500).json({
-    error: isProd ? "Server error" : err.message,
+    message: isProd ? "Server error" : err.message,
   });
 });
