@@ -25,8 +25,6 @@ app.use(express.json());
 app.use(notesRoutes);
 
 app.use(notFoundHandler);
-
-// ERROR middleware
 app.use(errorHandler);
 
 // START SERVER
