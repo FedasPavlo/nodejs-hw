@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { logger } from "./middleware/logger.js";
 import helmet from "helmet";
+import { errors } from "celebrate";
 import "dotenv/config";
 import { connectMongoDB } from './db/connectMongoDB.js';
 import { notFoundHandler } from "./middleware/notFoundHandler.js";
@@ -25,9 +26,10 @@ app.use(express.json());
 app.use(notesRoutes);
 
 app.use(notFoundHandler);
+app.use(errors());
 app.use(errorHandler);
 
-// START SERVER
+// START SERVER 
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);
 });
