@@ -19,7 +19,7 @@ userSchema.pre("save", function(next){
 });
 
 //видалення паролю при надсиланні відповіді на фронтенд
-userSchema.method.toJSON = function () {
+userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;
   return obj;

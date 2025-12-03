@@ -48,7 +48,7 @@ export const loginUser = async (req, res) => {
   res.status(200).json(user);
 };
 
-export const logOutUser = async (req, res) => {
+export const logoutUser = async (req, res) => {
   const { sessionId } = req.cookies;
 
   if (sessionId) {
