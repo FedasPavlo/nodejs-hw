@@ -1,56 +1,35 @@
 import express from "express";
 import cors from "cors";
-import pino from "pino-http";
+import { logger } from "./middleware/logger.js";
 import helmet from "helmet";
+import { errors } from "celebrate";
 import "dotenv/config";
+import { connectMongoDB } from './db/connectMongoDB.js';
+import { notFoundHandler } from "./middleware/notFoundHandler.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+import notesRoutes from "./routes/notesRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
+
+await connectMongoDB();
 
 // Middleware
 // Забезпечує зв'язок між різними базами
 app.use(cors());
 // Пакет безпеки для бекенду
 app.use(helmet());
+app.use(logger);
 app.use(express.json());
-app.use(pino());
 
-// ROUTES
+// ROUTES (шляхи)
+app.use(notesRoutes);
 
-// GET /notes
-app.get("/notes", (req, res) => {
-  res.status(200).json({ message: "Retrieved all notes" });
-});
+app.use(notFoundHandler);
+app.use(errors());
+app.use(errorHandler);
 
-// GET /notes/:noteId
-app.get("/notes/:noteId", (req, res) => {
-  const { noteId } = req.params;
-  res.status(200).json({
-    message: `Retrieved note with ID: ${noteId}`,
-  });
-});
-
-// TEST ERROR ROUTE
-app.get("/test-error", () => {
-  throw new Error("Simulated server error");
-});
-
-// 404 middleware
-app.use((req, res) => {
-  res.status(404).json({ message: "Route not found" });
-});
-
-// ERROR middleware
-app.use((err, req, res, next) => {
-  console.log(err.message);
-  const isProd = process.env.NODE_ENV === 'production';
-
-  res.status(500).json({
-    error: isProd ? "Server error" : err.message,
-  });
-});
-
-// START SERVER
+// START SERVER 
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);
 });
